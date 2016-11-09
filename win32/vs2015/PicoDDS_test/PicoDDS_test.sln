@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PicoDDS_test", "PicoDDS_test.vcxproj", "{9F48668B-4BA1-4C9F-9A1E-8F8D76B2366A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F48668B-4BA1-4C9F-9A1E-8F8D76B2366A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F48668B-4BA1-4C9F-9A1E-8F8D76B2366A}.Debug|Win32.Build.0 = Debug|Win32
+		{9F48668B-4BA1-4C9F-9A1E-8F8D76B2366A}.Release|Win32.ActiveCfg = Release|Win32
+		{9F48668B-4BA1-4C9F-9A1E-8F8D76B2366A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
