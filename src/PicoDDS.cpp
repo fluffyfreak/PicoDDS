@@ -117,6 +117,75 @@ int DDSImage::GetMinDXTSize() const
 	return GetMinSize(GetDXTFormat());
 }
 
+int DDSImage::GetMipLevelSize( const unsigned int width, const unsigned int height, const ImgFormat format)
+{
+	const int numPixels=width*height;
+
+	switch( format)
+	{
+	case FORMAT_L8:
+	case FORMAT_A8:
+		return numPixels;
+
+	case FORMAT_R16F:
+	case FORMAT_R5G6B5:
+	case FORMAT_X1R5G5B5:
+	case FORMAT_A1R5G5B5:
+	case FORMAT_A8L8:
+	case FORMAT_L16:
+	case FORMAT_V8U8:
+	case FORMAT_A16:
+		return numPixels*2;
+
+	case FORMAT_RGB:
+	case FORMAT_BGR:
+		return numPixels*3;
+
+	case FORMAT_RGB16:
+		return numPixels*6;
+
+	case FORMAT_RGBA:
+	case FORMAT_BGRA:
+	case FORMAT_ABGR:
+	case FORMAT_R32F:
+	case FORMAT_G16R16F:
+	case FORMAT_V16U16:
+	case FORMAT_G16R16:
+	case FORMAT_Q8W8V8U8:
+	case FORMAT_A16L16:
+		return numPixels*4;
+
+	case FORMAT_RGBA16:
+	case FORMAT_R16G16B16A16F:
+	case FORMAT_G32R32F:
+		return numPixels*8;
+
+	case FORMAT_R32G32B32A32F:
+		return numPixels*16;
+
+	case FORMAT_DXT1:
+		return ((width+3)/4) * ((height+3)/4) * 8;
+	case FORMAT_DXT2:
+	case FORMAT_DXT3:
+	case FORMAT_DXT4:
+	case FORMAT_DXT5:
+	case FORMAT_3DC:
+	case FORMAT_SWIZZLE_A2XY:
+	case FORMAT_SWIZZLE_XGBR:
+	case FORMAT_SWIZZLE_XRBG:
+	case FORMAT_SWIZZLE_RBXG:
+	case FORMAT_SWIZZLE_RGXB:
+	case FORMAT_SWIZZLE_RXBG:
+	case FORMAT_SWIZZLE_XGXR:
+	case FORMAT_NORMAL_MAP:
+		return ((width+3)/4) * ((height+3)/4) * 16;
+
+	case FORMAT_NONE:
+		return 0;
+	}
+	return 0;
+}
+
 int DDSImage::CalculateStorageSize() const
 {
 	int size = 0;
@@ -273,6 +342,17 @@ int DDSImage::GetNumImages() const
 ImgFormat DDSImage::GetDXTFormat() const
 {
 	ImgFormat format = FORMAT_NONE;
+	char fourcc[4] = { 0,0,0,0 };
+	// (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
+	fourcc[0] = (0x000000ff & surfacedata_.pixelformat.fourCC) >> 0;
+	fourcc[1] = (0x0000ff00 & surfacedata_.pixelformat.fourCC) >> 8;
+	fourcc[2] = (0x00ff0000 & surfacedata_.pixelformat.fourCC) >> 16;
+	fourcc[3] = (0xff000000 & surfacedata_.pixelformat.fourCC) >> 24;
+	printf("'%c','%c','%c','%c'", 
+		fourcc[0],
+		fourcc[1],
+		fourcc[2],
+		fourcc[3]);
 	switch(surfacedata_.pixelformat.fourCC) 
 	{
 	case FOURCC('D','X','T','1'):
@@ -308,6 +388,30 @@ ImgFormat DDSImage::GetDXTFormat() const
         break;
     case FOURCC('B','C','5','S'):
 		format = FORMAT_RGTC2_SIGNED_RG;
+        break;
+	case FOURCC('A', '2', 'X', 'Y'):
+        format = FORMAT_SWIZZLE_A2XY;
+        break;
+    case FOURCC('x', 'G', 'B', 'R'):
+        format = FORMAT_SWIZZLE_XGBR;
+        break;
+    case FOURCC('x', 'R', 'B', 'G'):
+        format = FORMAT_SWIZZLE_XRBG;
+        break;
+    case FOURCC('R', 'B', 'x', 'G'):
+        format = FORMAT_SWIZZLE_RBXG;
+        break;
+    case FOURCC('R', 'G', 'x', 'B'):
+        format = FORMAT_SWIZZLE_RGXB;
+        break;
+    case FOURCC('R', 'x', 'B', 'G'):
+        format = FORMAT_SWIZZLE_RXBG;
+        break;
+    case FOURCC('x', 'G', 'x', 'R'):
+        format = FORMAT_SWIZZLE_XGXR;
+        break;
+    case FOURCC('A', '2', 'D', '5'):
+        format = FORMAT_NORMAL_MAP;
         break;
 	case 0x74:
 		format=FORMAT_R32G32B32A32F;

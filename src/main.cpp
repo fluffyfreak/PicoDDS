@@ -1,17 +1,27 @@
 #include "PicoDDS.h"
+#include <cstdio>
+#include <cassert>
+
+void LoadTextureByName(const char *pName)
+{
+	assert(pName != nullptr);
+	printf("------------------------\n");
+	PicoDDS::DDSImage dds;
+	const size_t sizeLoaded = DDSLoad(pName, dds);
+	if (dds.IsLoaded() && (sizeLoaded>0)) {
+		printf("Size loaded: %zu\n", sizeLoaded);
+		printf("Storage Size: %d\n", dds.CalculateStorageSize());
+		printf("Number Images: %d\n", dds.GetNumImages());
+	} else {
+		printf("Not loaded: %s\n", pName);
+	}
+}
 
 int main(int argc, char *argv[])
 {
-	using namespace PicoDDS;
-
-	DDSImage dxt1;
-	size_t sizeLoaded = DDSLoad("../../../data/lena.dds", dxt1);
-
-	DDSImage dxt5;
-	sizeLoaded = DDSLoad("../../../data/bowfin_DXT5_xGxR.dds", dxt5);
-
-	DDSImage ati2;
-	sizeLoaded = DDSLoad("../../../data/bowfin_ATI2.dds", ati2);
+	LoadTextureByName("../../../data/lena.dds");
+	LoadTextureByName("../../../data/bowfin_norm_PNG_DXT5_xGxR_1.dds");
+	LoadTextureByName("../../../data/bowfin_ATI2.dds");
 
 	return 0;
 }

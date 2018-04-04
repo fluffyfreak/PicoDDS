@@ -81,6 +81,15 @@ namespace PicoDDS
 		FORMAT_RGTC2_RG,
 		FORMAT_RGTC2_SIGNED_RG,
 
+		FORMAT_SWIZZLE_A2XY,
+		FORMAT_SWIZZLE_XGBR,
+		FORMAT_SWIZZLE_XRBG,
+		FORMAT_SWIZZLE_RBXG,
+		FORMAT_SWIZZLE_RGXB,
+		FORMAT_SWIZZLE_RXBG,
+		FORMAT_SWIZZLE_XGXR,
+		FORMAT_NORMAL_MAP,
+
 		//FORMAT_FLOAT16,
 		//FORMAT_FLOAT32,
 		//some more 3DS formats follow
@@ -206,7 +215,7 @@ namespace PicoDDS
 		const int32_t	DDSCAPS2_CUBEMAP_POSITIVEZ = 0x00004000;
 		const int32_t	DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x00008000;
 		const int32_t	DDSCAPS2_VOLUME = 0x00200000;
-	};
+	}
 
 	class DDSImage
 	{
@@ -216,69 +225,11 @@ namespace PicoDDS
 		~DDSImage();
 
 		size_t Read(const char* pData, const size_t dataSize);
+		inline bool IsLoaded() const { return headerdone_; }
 
 		int GetMinDXTSize() const;
 
-		static int GetMipLevelSize( const unsigned int width, const unsigned int height, const ImgFormat format)
-		{
-			const int numPixels=width*height;
-			
-			switch( format)
-			{
-			case FORMAT_L8:
-			case FORMAT_A8:
-				return numPixels;
-
-			case FORMAT_R16F:
-			case FORMAT_R5G6B5:
-			case FORMAT_X1R5G5B5:
-			case FORMAT_A1R5G5B5:
-			case FORMAT_A8L8:
-			case FORMAT_L16:
-			case FORMAT_V8U8:
-			case FORMAT_A16:
-				return numPixels*2;
-
-			case FORMAT_RGB:
-			case FORMAT_BGR:
-				return numPixels*3;
-
-			case FORMAT_RGB16:
-				return numPixels*6;
-
-			case FORMAT_RGBA:
-			case FORMAT_BGRA:
-			case FORMAT_ABGR:
-			case FORMAT_R32F:
-			case FORMAT_G16R16F:
-			case FORMAT_V16U16:
-			case FORMAT_G16R16:
-			case FORMAT_Q8W8V8U8:
-			case FORMAT_A16L16:
-				return numPixels*4;
-
-			case FORMAT_RGBA16:
-			case FORMAT_R16G16B16A16F:
-			case FORMAT_G32R32F:
-				return numPixels*8;
-
-			case FORMAT_R32G32B32A32F:
-				return numPixels*16;
-			
-			case FORMAT_DXT1:
-				return ((width+3)/4) * ((height+3)/4) * 8;
-			case FORMAT_DXT2:
-			case FORMAT_DXT3:
-			case FORMAT_DXT4:
-			case FORMAT_DXT5:
-			case FORMAT_3DC:
-				return ((width+3)/4) * ((height+3)/4) * 16;
-
-			case FORMAT_NONE:
-				return 0;
-			}
-			return 0;
-		}
+		static int GetMipLevelSize(const unsigned int width, const unsigned int height, const ImgFormat format);
 
 		int CalculateStorageSize() const;
 
@@ -293,7 +244,7 @@ namespace PicoDDS
 #endif // PICODDS_OPENGL
 	protected:
 	private:
-		inline int GetMinSize(ImgFormat flag) const
+		inline static int GetMinSize(ImgFormat flag)
 		{
 			int minsize = 1;
 
@@ -307,6 +258,14 @@ namespace PicoDDS
 			case FORMAT_DXT4:
 			case FORMAT_DXT5:
 			case FORMAT_3DC:
+			case FORMAT_SWIZZLE_A2XY:
+			case FORMAT_SWIZZLE_XGBR:
+			case FORMAT_SWIZZLE_XRBG:
+			case FORMAT_SWIZZLE_RBXG:
+			case FORMAT_SWIZZLE_RGXB:
+			case FORMAT_SWIZZLE_RXBG:
+			case FORMAT_SWIZZLE_XGXR:
+			case FORMAT_NORMAL_MAP:
 				minsize = 16;
 				break;
 			case FORMAT_NONE:
@@ -318,39 +277,39 @@ namespace PicoDDS
 
 		}
 
-		inline uint16_t Read16_le(const byte* b) const
+		inline static uint16_t Read16_le(const byte* b) 
 		{
 			return b[0] + (b[1] << 8);
 		}
 
-		inline void Write16_le(byte* b, uint16_t value) const
+		inline static void Write16_le(byte* b, uint16_t value)
 		{
 			b[0] = value & 0xFF;
 			b[1] = value >> 8;
 		}
 
-		inline uint16_t Read16_be(const byte* b) const
+		inline static uint16_t Read16_be(const byte* b)
 		{
 			return (b[0] << 8) + b[1];
 		}
 
-		inline void Write16_be(byte* b, uint16_t value) const
+		inline static void Write16_be(byte* b, uint16_t value)
 		{
 			b[0] = value >> 8;
 			b[1] = value & 0xFF;
 		}
 
-		inline uint32_t Read32_le(const byte* b) const
+		inline static uint32_t Read32_le(const byte* b)
 		{
 			return Read16_le(b) + (Read16_le(b + 2) << 16);
 		}
 
-		inline uint32_t Read32_be(const byte* b) const
+		inline static uint32_t Read32_be(const byte* b)
 		{
 			return (Read16_be(b) << 16) + Read16_be(b + 2);
 		}
 
-		inline uint32_t ReadDword( byte * & pData ) const
+		inline static uint32_t ReadDword( byte * & pData )
 		{
 			uint32_t value=Read32_le(pData);
 			pData+=4;
