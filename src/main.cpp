@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	LoadTextureByName("../../../data/lena.dds");
 	LoadTextureByName("../../../data/bowfin_norm_PNG_DXT5_xGxR_1.dds");
-	LoadTextureByName("../../../data/bowfin_ATI2.dds");
+	LoadTextureByName("bad data");
 
 	return 0;
 }

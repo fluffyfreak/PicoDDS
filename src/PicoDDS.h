@@ -32,11 +32,11 @@ Some work carried out by Michael P. Jung, (c)2006,2007
   freely, subject to the following restrictions:
 
   1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
+	 claim that you wrote the original software. If you use this software
+	 in a product, an acknowledgment in the product documentation would be
+	 appreciated but is not required.
   2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
+	 misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 
 ========================================================================
@@ -77,7 +77,7 @@ namespace PicoDDS
 		FORMAT_3DC,
 
 		FORMAT_RGTC1_RED,
-        FORMAT_RGTC1_SIGNED_RED,
+		FORMAT_RGTC1_SIGNED_RED,
 		FORMAT_RGTC2_RG,
 		FORMAT_RGTC2_SIGNED_RG,
 
@@ -125,7 +125,7 @@ namespace PicoDDS
 
 	struct LoaderImgData
 	{
-		LoaderImgData():
+		LoaderImgData() :
 			height(0),
 			width(0),
 			depth(0),
@@ -148,7 +148,7 @@ namespace PicoDDS
 		byte* imgData;
 	};
 
-	#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
+#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
 
 	// header should contain 'DDS ' (yes, that space is meant to be there!)
 	namespace DDS
@@ -248,7 +248,7 @@ namespace PicoDDS
 		{
 			int minsize = 1;
 
-			switch(flag) 
+			switch (flag)
 			{
 			case FORMAT_DXT1:
 				minsize = 8;
@@ -277,7 +277,7 @@ namespace PicoDDS
 
 		}
 
-		inline static uint16_t Read16_le(const byte* b) 
+		inline static uint16_t Read16_le(const byte* b)
 		{
 			return b[0] + (b[1] << 8);
 		}
@@ -309,10 +309,10 @@ namespace PicoDDS
 			return (Read16_be(b) << 16) + Read16_be(b + 2);
 		}
 
-		inline static uint32_t ReadDword( byte * & pData )
+		inline static uint32_t ReadDword(byte * & pData)
 		{
-			uint32_t value=Read32_le(pData);
-			pData+=4;
+			uint32_t value = Read32_le(pData);
+			pData += 4;
 			return value;
 		}
 
